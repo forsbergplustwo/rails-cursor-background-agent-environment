@@ -1,36 +1,49 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "==> Snapshot: Running .cursor/snapshot.sh"
-echo "==> Snapshot: Reference: https://gorails.com/setup/ubuntu/24.04"
-
-SUDO="sudo"
 export DEBIAN_FRONTEND=noninteractive
+export DEBCONF_NONINTERACTIVE_SEEN=true
+export PATH="$HOME/.local/bin:$PATH"
 
-echo "==> Snapshot: Update apt"
-$SUDO apt update -y
-$SUDO apt-get update -y
+echo "==> Snapshot: Installing system packages"
+sudo -E apt-get update -qq
+sudo -E apt-get install -y -qq --no-install-recommends \
+  build-essential rustc libssl-dev libyaml-dev zlib1g-dev libgmp-dev libpq-dev libvips-dev \
+  postgresql redis-tools redis
 
-echo "==> Snapshot: Install required apt libraries"
-$SUDO apt install -y build-essential rustc libssl-dev libyaml-dev zlib1g-dev libgmp-dev libpq-dev libvips-dev
+echo "==> Snapshot: Configure bash and mise"
+sudo -E update-alternatives --install /bin/sh sh /bin/bash 100
+sudo -E update-alternatives --set sh /bin/bash
+sudo -E chsh -s /bin/bash "$USER"
+curl -fsSL https://mise.run | sh
 
-echo "==> Snapshot: Install PostgreSQL"
-$SUDO apt install -y postgresql
-echo "==> Snapshot: Start PostgreSQL"
-$SUDO service postgresql start || true
+cat >> ~/.bashrc <<'EOF'
+export PATH="$HOME/.local/bin:$PATH"
+eval "$(mise activate bash)"
+export MISE_AUTO_INSTALL=1
+export MISE_YES=1
+EOF
 
-echo "==> Snapshot: Install Redis"
-$SUDO apt install -y redis-tools redis
-echo "==> Snapshot: Start Redis"
-$SUDO service redis-server start || true
+# Also add to .bash_profile for login shells
+cat >> ~/.bash_profile <<'EOF'
+if [ -f ~/.bashrc ]; then
+  source ~/.bashrc
+fi
+EOF
 
-echo "==> Snapshot: Set default postgres user password to 'postgres'"
-$SUDO -u postgres psql -tAc "ALTER USER postgres WITH PASSWORD 'postgres';" || true
-export PGPASSWORD=postgres
+source ~/.bashrc
 
-echo
-echo "==> Snapshot: Manual steps"
-echo "- Install editor extensions (install in background if prompted): Ruby LSP, StandardRB, Prettier, ESLint."
-echo "- Click the "Capture Snapshot" button in the Cursor interactive sidebar."
-echo
-echo "Done."
+echo "==> Snapshot: Configure PostgreSQL"
+sudo service postgresql start
+sudo -u postgres psql -tAc "ALTER USER postgres WITH PASSWORD 'postgres';"
+
+cat > "$HOME/.pgpass" <<'EOF'
+localhost:5432:*:postgres:postgres
+127.0.0.1:5432:*:postgres:postgres
+EOF
+chmod 0600 "$HOME/.pgpass"
+
+echo "==> Snapshot: Start services"
+sudo service redis-server start
+
+echo "Done! Install editor extensions and capture snapshot."

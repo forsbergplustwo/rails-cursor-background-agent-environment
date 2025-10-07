@@ -1,4 +1,4 @@
-# Cursor - Background Agents Environment - for Ruby on Rails
+# Background Agent Environment Setup
 
 This guide walks you through setting up a Cursor Background Agent environment for Ruby on Rails apps. Follow the steps in order.
 
@@ -20,6 +20,7 @@ Note: This is a working prototype setup, YMMV (your milage may vary)!
      ```bash
      chmod +x .cursor/snapshot.sh .cursor/install.sh .cursor/start.sh
      ```
+   - Commit and push to github (Cursor pulls from Github in next steps when creating the remote machines)
 
 2) Open Cursor Settings
    - Go to: Cursor → Cursor Settings → Background Agents
@@ -31,16 +32,16 @@ Note: This is a working prototype setup, YMMV (your milage may vary)!
    - Wait for the remote server terminal to become ready
 
 5) In the remote server terminal, run the snapshot script
-   - This installs apt packages and required OS libraries:
+   - This installs apt packages and sets up mise + bash:
      ```bash
-     bash snapshot.sh
+     .cursor/snapshot.sh
      ```
 6) Install any Extensions to the editor, that are not automatically enabled on the remote server instance.
 
 7) Save the snapshot
    - Click "Save snapshot", and contineu the interactive Snapshot Creator steps.
-   - When asked for Install command, add: `bash .cursor/install.sh`
-   - When asked for Start command, add: `bash .cursor/start.sh`
+   - When asked for Install command, add: `.cursor/install.sh`
+   - When asked for Start command, add: `.cursor/start.sh`
    - When asked for Terminal command, add any needed, such as `Tests` => `bin/rails test`
    - When asked to verify the setup (a new VM starts), click "Everything Works" even though it doesn't (yet!). *This is because Ruby, Node etc. aren't installed yet, they are added by `install.sh` later so we get correct versions for our project. Some extensions will crash, like Ruby-SLP, again for the same reason.. ignore it and just click "Everything Works" (YOLO!)*
    - Once the interactive session is finished, confirm `environment.json` shows a new `snapshot` value

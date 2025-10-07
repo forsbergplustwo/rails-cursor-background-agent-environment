@@ -38,14 +38,15 @@ Note: This is a working prototype setup, YMMV (your milage may vary)!
 6) Install any Extensions to the editor, that are not automatically enabled on the remote server instance.
 
 7) Save the snapshot
-   - Click "Save snapshot", and follow the verification steps. NOTE: Ruby etc. won't be available yet, it's added by `install.sh` later.
+   - Click "Save snapshot", and contineu the interactive Snapshot Creator steps.
    - When asked for Install command, add: `bash .cursor/install.sh`
    - When asked for Start command, add: `bash .cursor/start.sh`
    - When asked for Terminal command, add any needed, such as `Tests` => `bin/rails test`
+   - When asked to verify the setup (a new VM starts), click "Everything Works" even though it doesn't (yet!). *This is because Ruby, Node etc. aren't installed yet, they are added by `install.sh` later so we get correct versions for our project. Some extensions will crash, like Ruby-SLP, again for the same reason.. ignore it and just click "Everything Works" (YOLO!)*
    - Once the interactive session is finished, confirm `environment.json` shows a new `snapshot` value
 
-8) Add the install and start commands to `environment.json`
-   - Example configuration (the `snapshot` value will be set by step 6):
+8) Add the install and start commands to `environment.json` if you did not do it earlier.
+   - Example configuration (the `snapshot` value will be set by step 7):
      ```json
      {
        "snapshot": "snapshot-YYYYMMDD-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
@@ -84,4 +85,4 @@ Note: This is a working prototype setup, YMMV (your milage may vary)!
     - Ensure the correct branch (with the updated `.cursor` files) is selected
     - Ask it to perform a task to verify, e.g.:
       "Run the test suite using `bin/rails test`"
-    - Note: It's easier to watch the VM boot sequence in the Cursor Agents (https://cursor.com/agents) web UI, not in Cursor IDE.
+    - Note: It's easier to watch the VM boot sequence (and any errors) in the browser Cursor Agents (https://cursor.com/agents) UI, not in Cursor IDE.

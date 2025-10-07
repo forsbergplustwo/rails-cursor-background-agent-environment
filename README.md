@@ -1,4 +1,4 @@
-# Background Agent Environment Setup
+# Cursor - Background Agent Environment - Ruby on Rails Setup
 
 This guide walks you through setting up a Cursor Background Agent environment for Ruby on Rails apps. Follow the steps in order.
 

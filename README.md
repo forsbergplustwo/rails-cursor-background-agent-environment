@@ -70,7 +70,7 @@ Note: This is a working prototype setup, YMMV (your milage may vary)!
 10) Add required secrets in Background Agent Settings → Secrets
    - Add:
      - `RAILS_MASTER_KEY=xxxxxx`
-     - `RAILS_ENV=test`
+     - `RAILS_ENV=test` (default env setup is for test, because it's simpler)
    - If you use private gems, also add:
      - `BUNDLE_GITHUB__COM=ghp_…` (GitHub token for Bundler)
 
